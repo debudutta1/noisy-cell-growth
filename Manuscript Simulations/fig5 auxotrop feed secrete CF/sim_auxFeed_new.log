@@ -1,0 +1,86 @@
+
+% No Secretion
+secrete_rate = 0;
+
+for p = p_range
+	for k = seed_range	%seed_range	
+		for i = 1:length(Sin)
+			for j = length(feed_rate):-1:1
+				
+				rng(k)
+				
+				display(strcat('seed_',num2str(k),'feed_',num2str(j),'p_',num2str(p),'Sin_',num2str(i)))
+				if isfile(strcat(base_dir,'var_aux1_Sin',num2str(Sin(i)),'_p',num2str(p),'_feed',num2str(feed_rate(j)),'_rng',num2str(k),'.mat'))
+					display(strcat(base_dir,'var_aux1_Sin',num2str(Sin(i)),'_p',num2str(p),'_feed',num2str(feed_rate(j)),'_rng',num2str(k),'.mat'))
+					continue;
+				end
+
+				y = parallel_growth_sim_auxFeedSecrete(gens, Sin(i), n, p, T, config, sec_or_min, createRec, threshold, same_thresh, genExp, n_ext, feed_rate(j), cell_type1, secrete_rate, OVprod_mode);
+
+				div_durs = y.div_durs;
+				div_durs_exp = y.div_durs_exp;
+				proto_cell = y.proto_cell;
+				cell_rec = y.cell_rec;
+				size_bir = y.size_bir;
+				size_div = y.size_div;
+				size_bir_exp = y.size_bir_exp;
+				size_div_exp = y.size_div_exp;
+				
+				all_metab = y.all_metab;
+				mrna_produced = y.mrna_produced;
+				prot_produced = y.prot_produced;
+				mrna_beg = y.mrna_beg;
+				mrna_end = y.mrna_end;
+				prot_beg = y.prot_beg;
+				prot_end = y.prot_end;
+				
+				sim_vars = struct('Sin',Sin(i),'p',p,'feed_rate',feed_rate(j),'seed',k,'OVprod_mode', OVprod_mode, 'genExp', genExp);
+					
+				save(strcat(base_dir,'var_aux1_Sin',num2str(Sin(i)),'_p',num2str(p),'_feed',num2str(feed_rate(j)),'_rng',num2str(k),'.mat'),'div_durs','div_durs_exp','sim_vars','config','size_bir','size_div','size_bir_exp','size_div_exp','all_metab','mrna_beg','mrna_end','mrna_produced','prot_beg','prot_end','prot_produced');
+			end
+		end
+	end
+end
+seed_0feed_7p_3Sin_1
+{'parallel_growth_sim_auxFeedSecrete' is not found in the current folder or on the MATLAB path, but exists in:
+    C:\Users\sysbio_admin\Google Drive\EvoCoopSim_codes\Cell_Growth_Model_codeArchive\cleaned\Manuscript simulations\fig 5
+    Auxotroph External feed
+
+<a href = "matlab:matlab.internal.language.commandline.executeCode('cd ''C:\Users\sysbio_admin\Google Drive\EvoCoopSim_codes\Cell_Growth_Model_codeArchive\cleaned\Manuscript simulations\fig 5 Auxotroph External feed''')">Change the MATLAB current folder</a> or <a href = "matlab:matlab.internal.language.commandline.executeCode('addpath ''C:\Users\sysbio_admin\Google Drive\EvoCoopSim_codes\Cell_Growth_Model_codeArchive\cleaned\Manuscript simulations\fig 5 Auxotroph External feed''')">add its folder to the MATLAB path</a>.
+} 
+% Run auxFeed Simulations - V2 - Only the auxotrophy fed
+sec_or_min = 0; % sec
+n = 3;
+%p_range = [3,2,4,5];
+p_range = 3;
+n_ext = 0;
+seed_range = 0:1;
+%Sin = 1e3*[1.5 4 5.5 6.5 7 7.5 10 20];
+Sin = 1e3*[1.5 5 6 6.5 7 9 13];
+OVprod_mode = 2; % Decide the scheme of production of secreted metabolite: 1) Only Flux Doubling, 2) Only enzyme Overexpression, 3) Both
+feed_rate = [312 625 1250 2500 5000 7500 12500];
+% Exponential distribution D1 to derive the duration of transcription ON time
+t_ON = 4; % On Average transcription ON time in minutes
+% Exponential distribution D2 to derive the duration of transcription OFF time
+t_OFF = 2.4; % On Average transcription OFF time in minutes
+genExp.t_ON = t_ON;
+genExp.t_OFF = t_OFF;
+% NO Overexpression
+genExp.t_ON_ov = t_ON;
+genExp.t_OFF_ov = t_OFF;
+threshold = 1e7;
+same_thresh = 1;
+addpath('C:\Users\sysbio_admin\Google Drive\EvoCoopSim_codes\Cell_Growth_Model_codeArchive\cleaned')
+% NEW SIZER with no delay - Synced
+config = struct('adder',2,'reset_S',0,'singOper',2);	% singOper 2 synced, 1 delayed, 0 independent
+gens = 13; % 2^14 cells = 16384
+sec_or_min = 0; % 0 - sec
+T = 1.5;
+%createRec = 0;
+createRec = 2;	% Detailed data not output, but computed to extract important parameters
+cell_type1 = [1, 2, 2, 3];
+base_dir = 'D:\Debu Simulations\Sep 2020\';
+mkdir(strcat(base_dir,'var_auxFeed'));
+[Warning: Directory already exists.] 
+base_dir = strcat(base_dir,'\var_auxFeed\');
+diary sim_auxFeed_new.log
