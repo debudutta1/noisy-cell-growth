@@ -11,7 +11,7 @@ Department of Chemical Engineering, Indian Institute of Technology Bombay, Mumba
 **Running Title**: How do cooperators grow faster than prototrophs 
 
 **# Corresponding Authors**: 
-Dibyendu Dutta	Email: dibyendu_dutta@iitb.ac.in
+Dibyendu Dutta	Email: dibyendu_dutta@iitb.ac.in, debudutta1@gmail.com
 
 ==============================================================================================
 
